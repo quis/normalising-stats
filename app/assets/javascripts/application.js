@@ -63,16 +63,26 @@
             },
             'enableInteractivity': false,
             'height': 350,
-            'legend': 'none',
+            'legend': {'position': 'bottom', 'textStyle': {'color': '#005EA5', 'fontSize': 14}},
             'pieHole': 0.6,
-            'slices': {0: {'color': '#005EA5'}, 1: {'color': '#28A197', 'textStyle': {'color': '#28A197'}}},
-            'title': resp.getColumnLabel(i)
+            'pieSliceText': 'none',
+            'slices': {
+              0: {
+                'visibleInLegend': true,
+                'color': '#005EA5'
+              },
+              1: {
+                'visibleInLegend': false,
+                'color': '#28A197',
+                'textStyle': {'color': '#28A197'}
+              }
+            }
           };
 
         data.addColumn('string', 'Property');
         data.addColumn('number', 'Value');
         data.addRows([
-          [resp.getColumnLabel(i), resp.getValue(row,i)],
+          [resp.getColumnLabel(i) + ' ' + ( resp.getValue(row,i) * 100).toFixed(1) + '%', resp.getValue(row,i)],
           ['Other', (1 - resp.getValue(row,i))]
         ]);
 

@@ -5,11 +5,17 @@
 */
 
 var gulp = require('gulp')
+var open = require('gulp-open')
 var runSequence = require('run-sequence')
 
 gulp.task('default', function (done) {
   runSequence('generate-assets',
-                'watch', done)
+                'watch', 'open', done)
+})
+
+gulp.task('open', function(){
+  gulp.src('./index.html')
+  .pipe(open())
 })
 
 gulp.task('generate-assets', function (done) {
