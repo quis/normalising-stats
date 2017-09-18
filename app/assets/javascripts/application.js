@@ -63,9 +63,10 @@
             },
             'enableInteractivity': false,
             'height': 350,
-            'legend': {'position': 'bottom', 'textStyle': {'color': '#005EA5', 'fontSize': 14}},
+            // 'legend': {'position': 'bottom', 'textStyle': {'color': '#005EA5', 'fontSize': 14}},
+            'legend': 'none',
             'pieHole': 0.6,
-            'pieSliceText': 'none',
+            'pieSliceText': 'percentage',
             'slices': {
               0: {
                 'visibleInLegend': true,
@@ -76,7 +77,8 @@
                 'color': '#28A197',
                 'textStyle': {'color': '#28A197'}
               }
-            }
+            },
+            'title': resp.getColumnLabel(i)
           };
 
         data.addColumn('string', 'Property');
