@@ -14,7 +14,17 @@ $path: "/public/images/";
 .column {
   float: left;
   margin-bottom: $gutter;
+  position: relative;
   width: 50%;
+  .value {
+    position: absolute;
+    top: 48%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: $link-colour;
+    font-weight: bold;
+  }
 }
 
 @media screen and (max-width: 960px) {

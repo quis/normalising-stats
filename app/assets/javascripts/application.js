@@ -22,9 +22,11 @@
       var intro = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B2');
       var footer = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B6');
       var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B9:F14');
+      var age = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B15:F25');
       intro.send($.proxy(this.handleIntroResponse, this));
       footer.send($.proxy(this.handleFooterResponse, this));
       query.send($.proxy(this.handleChartResponse, this));
+      age.send($.proxy(this.handleAgeResponse, this));
     },
 
     handleIntroResponse: function(response){
@@ -40,6 +42,51 @@
     handleChartResponse: function(response){
       var resp = response.getDataTable();
       this.addRows(resp);
+    },
+
+    handleAgeResponse: function(response) {
+      var resp = response.getDataTable();
+      var $el = $('<div/>')
+                .append('<h2 class="heading-medium">'+resp.getValue(0, 0)+'</h2>')
+                .append('<p>'+resp.getValue(0, 1)+'</p>')
+                .insertAfter(this.$chartEl);
+      this.addAges(resp, $el);
+    },
+
+    addAges: function(resp, $el) {
+      for(var i=3; i<resp.getNumberOfColumns();i++){
+        var colours,
+          $graphEl = $('<div/>').addClass('column').appendTo($el);
+        if(i===3){
+          colours = ['#003761', '#004172', '#004b83', '#005594', '#005ea5', '#0068b6', '#0072c7', '#007bd8', '#0085e9', '#008ffa']
+        } else {
+          colours = ['#175d57', '#1a6b64', '#1e7871', '#21867d', '#25938a', '#28a197', '#2bafa4', '#2bafa4', '#2fbcb1', '#32cabd']
+        }
+        var title = (i===3)? 'Justice Digital & Technology' : 'UK';
+        var data = new google.visualization.DataTable(),
+          options = {
+            'chartArea': {
+              'height': 300
+            },
+            'colors': colours,
+            'enableInteractivity': true,
+            'height': 350,
+            'legend': 'none',
+            'pieHole': 0.6,
+            'sliceVisibilityThreshold': 0,
+            'title': title
+          };
+        data.addColumn('string', 'Property');
+        data.addColumn('number', 'Value');
+        for(var j=1; j<resp.getNumberOfRows();j++){
+          data.addRow(
+            [resp.getValue(j,2), Math.round(resp.getValue(j,i))]
+          );
+        }
+
+        var chart = new google.visualization.PieChart($graphEl[0]);
+        chart.draw(data, options);
+      }
     },
 
     addRows: function(resp) {
@@ -63,10 +110,9 @@
             },
             'enableInteractivity': false,
             'height': 350,
-            // 'legend': {'position': 'bottom', 'textStyle': {'color': '#005EA5', 'fontSize': 14}},
             'legend': 'none',
             'pieHole': 0.6,
-            'pieSliceText': 'percentage',
+            'pieSliceText': 'none',
             'slices': {
               0: {
                 'visibleInLegend': true,
@@ -84,12 +130,13 @@
         data.addColumn('string', 'Property');
         data.addColumn('number', 'Value');
         data.addRows([
-          [resp.getColumnLabel(i) + ' ' + ( resp.getValue(row,i) * 100).toFixed(1) + '%', resp.getValue(row,i)],
-          ['Other', (1 - resp.getValue(row,i))]
+          [resp.getColumnLabel(i) + ' ' + Math.round(( resp.getValue(row,i) * 100).toFixed(1)) + '%', Math.round(resp.getValue(row,i)*100)],
+          ['Other', Math.round((1 - resp.getValue(row,i))*100)]
         ]);
 
         var chart = new google.visualization.PieChart($graphEl[0]);
         chart.draw(data, options);
+        var $valueEl = $('<div/>').addClass('value').text(Math.round(( resp.getValue(row,i) * 100).toFixed(1)) + '%').appendTo($graphEl);
       }
     }
 
