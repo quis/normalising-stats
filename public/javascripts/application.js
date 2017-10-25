@@ -54,25 +54,20 @@
     },
 
     addAges: function(resp, $el) {
-      for(var i=3; i<resp.getNumberOfColumns();i++){
-        var colours,
-          $graphEl = $('<div/>').addClass('column').appendTo($el);
-        if(i===3){
-          colours = ['#003761', '#004172', '#004b83', '#005594', '#005ea5', '#0068b6', '#0072c7', '#007bd8', '#0085e9', '#008ffa']
-        } else {
-          colours = ['#175d57', '#1a6b64', '#1e7871', '#21867d', '#25938a', '#28a197', '#2bafa4', '#2bafa4', '#2fbcb1', '#32cabd']
-        }
-        var title = (i===3)? 'Justice Digital & Technology' : 'UK';
+      for(var r=3; r<resp.getNumberOfColumns();r++){
+        var $graphEl = $('<div/>').addClass('column').appendTo($el);
+        var title = (r===3)? 'Justice Digital & Technology' : 'UK';
         var data = new google.visualization.DataTable(),
           options = {
             'chartArea': {
               'height': 300
             },
-            'colors': colours,
+            'colors': ['#F47738', '#6F72AF', '#005EA5', '#FFBF47', '#B10E1E', '#85994B', '#2E358B', '#28A197', '#2B8CC4', '#B58840'],
             'enableInteractivity': true,
             'height': 350,
             'legend': 'none',
             'pieHole': 0.6,
+            'pieSliceText': 'label',
             'sliceVisibilityThreshold': 0,
             'title': title
           };
@@ -80,7 +75,7 @@
         data.addColumn('number', 'Value');
         for(var j=1; j<resp.getNumberOfRows();j++){
           data.addRow(
-            [resp.getValue(j,2), Math.round(resp.getValue(j,i))]
+            [resp.getValue(j,2), Math.round(resp.getValue(j,r))]
           );
         }
 
