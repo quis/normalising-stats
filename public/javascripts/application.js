@@ -123,7 +123,7 @@
         this.addChart(resp, i, $el);
       }
 
-      this.getPayData();
+      // this.getPayData();
 
     },
 
