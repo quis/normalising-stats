@@ -37,6 +37,11 @@
       query.send($.proxy(this.handlePayResponse, this));
     },
 
+    getRoleData: function(){
+      var roles = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B40:C42');
+      roles.send($.proxy(this.handleRolesResponse, this));
+    },
+
     handleIntroResponse: function(response){
       var resp = response.getDataTable();
       $(this.introEl).text(resp.getValue(0, 0));
@@ -59,6 +64,11 @@
                 .append('<p>'+resp.getValue(0, 1)+'</p>')
                 .insertAfter(this.$chartEl);
       this.addAges(resp, $el);
+    },
+
+    handleRolesResponse: function(response) {
+      var resp = response.getDataTable();
+      this.addRoles(resp);
     },
 
     handlePayResponse: function(response) {
@@ -115,22 +125,69 @@
       for(var i=0; i<resp.getNumberOfRows();i++){
         var title = resp.getValue(i, 0),
             $el = $('<div/>')
-                    .addClass('grid-row')
-                    .attr('id', title.replace(/\s/g,'').toLowerCase())
-                    .append('<h2 class="column-two-thirds heading-medium">'+resp.getValue(i, 0)+'</h2>')
-                    .append('<p class="column-full">'+resp.getValue(i, 1)+'</p>')
-                    .appendTo(this.$chartEl);
+                  .addClass('grid-row')
+                  .attr('id', title.replace(/\s/g,'').toLowerCase())
+                  .append('<h2 class="column-two-thirds heading-medium">'+resp.getValue(i, 0)+'</h2>')
+                  .append('<p class="column-full">'+resp.getValue(i, 1)+'</p>')
+                  .appendTo(this.$chartEl);
         this.addChart(resp, i, $el);
       }
+      this.getRoleData();
+    },
 
+    addRoles: function(resp) {
+      var $el = $('<div/>')
+                .addClass('grid-row')
+                .appendTo($('#women'));
+      
+      for(var i=0; i<resp.getNumberOfRows();i++){
+        var title = resp.getValue(i, 0),
+            value = resp.getValue(i, 1),
+            $sectionEl = $('<div/>')
+                        .addClass('column-one-third column column--small')
+                        .attr('id', title.replace(/\s/g,'').toLowerCase())
+                        .append('<h2 class="heading-small">'+title+'</h2>')
+                        .appendTo($el);
+            
+        var $graphEl = $('<div/>').appendTo($sectionEl);
+        var data = new google.visualization.DataTable(),
+            options = {
+              'chartArea': {
+                'height': 200
+              },
+              'enableInteractivity': false,
+              'height': 250,
+              'legend': 'none',
+              'pieHole': 0.6,
+              'pieSliceText': 'none',
+              'slices': {
+                0: {
+                  'visibleInLegend': true,
+                  'color': '#005EA5'
+                },
+                1: {
+                  'visibleInLegend': false,
+                  'color': '#28A197',
+                  'textStyle': {'color': '#28A197'}
+                }
+              }
+            };
+        data.addColumn('string', 'Property');
+        data.addColumn('number', 'Value');
+        data.addRows([
+          [title + ' ' + Math.round(( value * 100).toFixed(1)) + '%', Math.round(value*100)],
+          ['Other', Math.round((1 - value)*100)]
+        ]);
+        var chart = new google.visualization.PieChart($graphEl[0]);
+        chart.draw(data, options);
+        var $valueEl = $('<div/>').addClass('value').text(Math.round(( value * 100).toFixed(1)) + '%').appendTo($graphEl);
+      }
       this.getPayData();
-
     },
 
     addChart: function(resp, row, $el){
       for(var i=3; i<resp.getNumberOfColumns();i++){
         var $graphEl = $('<div/>').addClass('column-one-half column').appendTo($el);
-
         var data = new google.visualization.DataTable(),
           options = {
             'chartArea': {

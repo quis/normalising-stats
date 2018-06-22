@@ -26,6 +26,15 @@ $path: "/public/images/";
     font-weight: bold;
   }
 }
+.column--small {
+  width: 33.3%;
+  .value {
+    top: 54%;
+  }
+  h2 {
+    text-align: center;
+  }
+}
 
 @media screen and (max-width: 960px) {
   .column {
