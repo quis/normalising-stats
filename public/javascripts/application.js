@@ -40,8 +40,8 @@
     getRoleData: function(){
       var women = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B40:C42');
       var bme = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B44:C46');
-      women.send($.proxy(this.handleRolesResponse, this, 'women'));
-      bme.send($.proxy(this.handleRolesResponse, this, 'bme'));
+      women.send($.proxy(this.handleWomenRolesResponse, this));
+      bme.send($.proxy(this.handleBMERolesResponse, this));
     },
 
     handleIntroResponse: function(response){
@@ -68,9 +68,15 @@
       this.addAges(resp, $el);
     },
 
-    handleRolesResponse: function(el, response) {
+    handleWomenRolesResponse: function(response) {
       var resp = response.getDataTable();
-      this.addRoles(resp, $('#'+el));
+      this.addRoles(resp, $('#women'));
+      this.getPayData();
+    },
+
+    handleBMERolesResponse: function(response) {
+      var resp = response.getDataTable();
+      this.addRoles(resp, $('#bme'));
     },
 
     handlePayResponse: function(response) {
@@ -184,7 +190,6 @@
         chart.draw(data, options);
         var $valueEl = $('<div/>').addClass('value').text(Math.round(( value * 100).toFixed(1)) + '%').appendTo($graphEl);
       }
-      this.getPayData();
     },
 
     addChart: function(resp, row, $el){
