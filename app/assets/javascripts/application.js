@@ -61,9 +61,9 @@
 
     handleAgeResponse: function(response) {
       var resp = response.getDataTable();
-      var $el = $('<div/>')
-                .append('<h2 class="heading-medium">'+resp.getValue(0, 0)+'</h2>')
-                .append('<p>'+resp.getValue(0, 1)+'</p>')
+      var $el = $('<div class="grid-row"></div>')
+                .append('<h2 class="heading-medium column-two-thirds">'+resp.getValue(0, 0)+'</h2>')
+                .append('<p class="column-two-thirds bottom-gutter">'+resp.getValue(0, 1)+'</p>')
                 .insertAfter(this.$chartEl);
       this.addAges(resp, $el);
     },
@@ -82,12 +82,13 @@
     handlePayResponse: function(response) {
       var resp = response.getDataTable();
       var $el = $('<div/>')
-                .addClass('column-full')
+                .addClass('column-two-thirds clearfix')
                 .append('<h2 class="heading-small">'+resp.getValue(0, 0)+'</h2>')
                 .append('<p>'+resp.getValue(1, 0)+'</p>')
                 .append('<p>'+resp.getValue(2, 0)+'</p>')
                 .append('<p>'+resp.getValue(3, 0)+'</p>')
-                .appendTo($('#women'));
+                .appendTo($('#women'))
+                .wrap('<div class="grid-row"><div class="column-full"></div></div>');
       var $mean = $('<div/>').addClass('data column-one-third')
                   .append('<span class="data-item bold-xxlarge">'+resp.getValue(1, 2)+'%</span>')
                   .append('<span class="data-item bold-xsmall">Lower than men (MEAN)</span>')
@@ -136,7 +137,7 @@
                   .addClass('grid-row')
                   .attr('id', title.replace(/\s/g,'').toLowerCase())
                   .append('<h2 class="column-two-thirds heading-medium">'+resp.getValue(i, 0)+'</h2>')
-                  .append('<p class="column-full">'+resp.getValue(i, 1)+'</p>')
+                  .append('<p class="column-two-thirds bottom-gutter">'+resp.getValue(i, 1)+'</p>')
                   .appendTo(this.$chartEl);
         this.addChart(resp, i, $el);
       }
