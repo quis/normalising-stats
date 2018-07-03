@@ -38,8 +38,10 @@
     },
 
     getRoleData: function(){
-      var roles = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B40:C42');
-      roles.send($.proxy(this.handleRolesResponse, this));
+      var women = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B40:C42');
+      var bme = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1B37J7fFTokDZ3J3hX4zIm4YhGy5tR6WfKt6RRIfugcE/gviz/tq?gid=0&range=B44:C46');
+      women.send($.proxy(this.handleRolesResponse, this, 'women'));
+      bme.send($.proxy(this.handleRolesResponse, this, 'bme'));
     },
 
     handleIntroResponse: function(response){
@@ -66,9 +68,9 @@
       this.addAges(resp, $el);
     },
 
-    handleRolesResponse: function(response) {
+    handleRolesResponse: function(el, response) {
       var resp = response.getDataTable();
-      this.addRoles(resp);
+      this.addRoles(resp, $('#'+el));
     },
 
     handlePayResponse: function(response) {
@@ -135,11 +137,11 @@
       this.getRoleData();
     },
 
-    addRoles: function(resp) {
+    addRoles: function(resp, $elContainer) {
       var $el = $('<div/>')
                 .addClass('grid-row')
-                .appendTo($('#women'));
-      
+                .appendTo($elContainer);
+
       for(var i=0; i<resp.getNumberOfRows();i++){
         var title = resp.getValue(i, 0),
             value = resp.getValue(i, 1),
@@ -148,7 +150,7 @@
                         .attr('id', title.replace(/\s/g,'').toLowerCase())
                         .append('<h2 class="heading-small">'+title+'</h2>')
                         .appendTo($el);
-            
+
         var $graphEl = $('<div/>').appendTo($sectionEl);
         var data = new google.visualization.DataTable(),
             options = {

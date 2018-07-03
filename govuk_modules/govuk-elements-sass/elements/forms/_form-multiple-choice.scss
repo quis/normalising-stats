@@ -88,7 +88,6 @@
     border: solid;
     border-width: 0 0 5px 5px;
     background: transparent;
-    border-top-color: transparent;
     width: 17px;
     height: 7px;
     position: absolute;
@@ -117,13 +116,8 @@
   }
 
   // Disabled state
-  input:disabled {
-    cursor: default;
-  }
-
   input:disabled + label {
     @include opacity(0.5);
-    cursor: default;
   }
 
   &:last-child,
